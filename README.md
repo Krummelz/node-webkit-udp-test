@@ -3,9 +3,6 @@ node-webkit-udp-test
 
 A simple interface to test UDP communications
 
-<<<<<<< HEAD
-To test this out, download or clone the node-webkit repo
-=======
 To test this out:
 
 1. Download the [node-webkit](https://github.com/rogerwang/node-webkit#downloads) distribution for your platform
@@ -19,4 +16,3 @@ I've found, on Windows, it's best to stick to utf16le/ucs2 encoding.
 If it stops working, close and restart.
 
 Have fun :)
->>>>>>> origin/master
