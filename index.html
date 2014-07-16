@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>UDT test app</title>
+</head>
+
+<body>
+
+    <div>
+        <div><strong>Local Socket:</strong></div>
+        <div>
+            Host: <input id="txtLocalHost" type="text" value="127.0.0.1" />
+        </div>
+        <div>
+            Port: <input id="txtLocalPort" type="text" value="41234" />
+        </div>
+        <div>
+            <button id="btnConnectLocal">Connect</button>
+        </div>
+    </div>
+    <div>&nbsp;</div>        
+    <div id="pnlMessage" style="display:none;">
+        <div><strong>Remote Socket:</strong></div>
+        <div>
+            Host: <input id="txtRemoteHost" type="text" value="127.0.0.1" />
+        </div>
+        <div>
+            Port: <input id="txtRemotePort" type="text" value="41235" />
+        </div>
+        <div>&nbsp;</div>
+        <div>Encoding:
+            <select id="ddlEncoding">
+                <option>ascii</option>
+                <option>utf8</option>
+                <option>utf16le</option>
+                <option>ucs2</option>
+                <option>base64</option>
+                <option>binary</option>
+                <option>hex</option>
+            </select>
+        </div>
+        <div><strong>Message:</strong></div>
+        <div>
+            <textarea id="txtMessage" rows="4" cols="40"></textarea>
+        </div>
+        <div>
+            <button id="btnSend">Send</button>
+        </div>
+    </div>
+    
+    
+    <div id="pnlOutput">
+    </div>    
+    
+</body>
+    
+    <script type="text/javascript">
+        
+        //UDP stuffs
+        var dgram = require('dgram');
+        var socket = dgram.createSocket("udp4");
+        
+        
+        //form elements
+        var txtLocalHost = document.getElementById("txtLocalHost");
+        var txtLocalPort = document.getElementById("txtLocalPort");
+        var btnConnectLocal = document.getElementById("btnConnectLocal");
+        
+        var txtRemoteHost = document.getElementById("txtRemoteHost");
+        var txtRemotePort = document.getElementById("txtRemotePort");
+        
+        var ddlEncoding = document.getElementById("ddlEncoding");
+        var pnlMessage = document.getElementById("pnlMessage");
+        var txtMessage = document.getElementById("txtMessage");
+        var btnSend = document.getElementById("btnSend");
+        
+        var pnlOutput = document.getElementById("pnlOutput");
+        
+        
+        //functions
+        function connect() {
+            //bind the socket to the specified host and port
+            socket.bind(txtLocalPort.value, txtLocalHost.value);
+        }
+        function sendMessage() {
+            var message = new Buffer(txtMessage.value.toString(), ddlEncoding.value);
+            appendMessage("<i><strong>Sending (" + ddlEncoding.value + "):</strong>" + message.toString() + "</i>");
+            socket.send(message, 0, message.length, txtRemotePort.value, txtRemoteHost.value);
+        }
+        function appendMessage(message) {
+            var div = document.createElement("div");
+            div.innerHTML = message;
+            pnlOutput.appendChild(div);
+        }
+        
+        //event handlers
+        btnConnectLocal.addEventListener("click", connect);
+        btnSend.addEventListener("click", sendMessage);
+        
+        function _error(err) {
+            appendMessage("<strong>socket error:</strong>\n" + err.stack);
+            socket.close();
+        }
+        function _message(msg, rinfo) {
+            appendMessage(msg.toString());
+        }
+        function _listening() {
+            var address = socket.address();
+            appendMessage("<i>socket listening " + address.address + ":" + address.port + "</i>");
+            btnConnectLocal.disabled = true;
+            pnlMessage.style.display = "block";
+        }
+        
+        //more UDP stuffs
+        socket.on("error", _error);
+        socket.on("message", _message);
+        socket.on("listening", _listening);
+        
+    </script>
+</html>
