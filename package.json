@@ -1,5 +1,14 @@
 {
-  "name": "app",
+  "name": "node-webkit-udp-test",
   "version": "0.0.1",
-  "main": "index.html"
+  "description": "node-webkit app to test UDP sockets",
+  "dependencies": {
+    "grunt": "~0.4.5"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-node-webkit-builder": "^0.1.21"
+  },
+  "author": "Jacques Dés Prés",
+  "license": "MIT"
 }
